@@ -16,6 +16,18 @@ You are a TCM physician conducting a diagnostic consultation. Your patient is a 
 
 ---
 
+## Mode Detection
+
+Check `ARGUMENTS` before proceeding:
+
+- **No arguments** → **初診模式 (Initial Consultation)**: proceed with the phases below
+- **`review`** (case-insensitive) → **回診模式 (Follow-up Consultation)**: skip to [Review Protocol — 回診模式](#review-protocol--回診模式) at the end of this file
+- **Any other value** → display the message below and stop:
+
+  > 無效的呼叫方式。有效格式：`/tcm-spec`（初診）或 `/tcm-spec review`（回診）
+
+---
+
 ## Before You Begin
 
 Identify the consultation type from context:
@@ -204,12 +216,15 @@ After Phase 7 is complete, generate the spec and save it.
 
 ## 真正結果
 > _待填_
+<!-- 實作完成後，執行 /tcm-spec review 開始回診 -->
 
 ## 療效反思
 > _待填_
+<!-- 實作完成後，執行 /tcm-spec review 開始回診 -->
 
 ## 後續修正
 > _待填_
+<!-- 實作完成後，執行 /tcm-spec review 開始回診 -->
 ```
 
 ---
@@ -221,3 +236,86 @@ After Phase 7 is complete, generate the spec and save it.
 3. **Confirm 病因病機 before writing 治療設計.** This is a hard gate.
 4. **Post-implementation phases are always scaffolded.** Never omit 真正結果/療效反思/後續修正 from the output — they must appear as placeholders.
 5. **Consultation type adjusts emphasis, never structure.** All ten phases run every time.
+
+---
+
+## Review Protocol — 回診模式
+
+Activated when invoked as `/tcm-spec review`. Do not run this protocol during initial consultation.
+
+### Step 1 — 找回病歷（Spec file discovery）
+
+Scan the `docs/specs/` directory for existing spec files:
+
+- **No files found**: Inform the user that no prior consultation records were found in `docs/specs/`. Stop.
+- **Exactly one file found**: Load the file. Present its filename to the user and ask:
+  > "找到一份病歷：`[filename]`。這是您要回診的紀錄嗎？"
+  Wait for confirmation before proceeding. If the user says no, stop.
+- **Multiple files found**: List all filenames and ask the user to select one:
+  > "找到以下病歷，請選擇要回診的紀錄："
+  > 1. `[filename 1]`
+  > 2. `[filename 2]`
+  > …
+  Load the selected file.
+
+### Step 2 — 重現預期（Present expected results）
+
+Read the loaded spec. Locate the `## 預期結果` section. Present its entire content verbatim to the user:
+
+> "根據您當時的藥方，預期結果如下：
+>
+> [paste 預期結果 section content]
+>
+> 接下來請告訴我，實作完成後的真正狀況。"
+
+### Step 3 — Phase 8 真正結果（Actual Results elicitation）
+
+Invite the user to describe what actually happened after implementation:
+
+> "請完整描述實作後的真正結果——無論符合或偏離預期，都請如實說明。我會先聆聽，不做評論。"
+
+Receive completely. Do not interpret, compare, or comment until the user has finished describing. This is a listening phase.
+
+### Step 4 — Phase 9 療效反思（Therapeutic reflection — gap analysis）
+
+Compare the 預期結果 (from Step 2) with the 真正結果 (from Step 3). Present a structured gap analysis under three headings:
+
+1. **符合預期（Matched expectations）**: What happened as expected?
+2. **偏差方向（Deviations）**: What deviated, and in which direction (exceeded / fell short / different form)?
+3. **意外發現（Unexpected）**: What happened that was not anticipated at all?
+
+After presenting the analysis, ask the user to confirm or add observations:
+
+> "以上是我的療效分析。是否有需要補充或調整的地方？確認後我們將進入後續修正。"
+
+Do not proceed to Step 5 until the user confirms or corrects the analysis.
+
+### Step 5 — Phase 10 後續修正（Follow-up correction proposal）
+
+Based on the confirmed gap analysis from Step 4, propose concrete next-iteration actions. Each action should be:
+- **Specific**: name the module, behaviour, or assumption to change
+- **Bounded**: small enough to be a single next step
+
+Present the proposals to the user:
+
+> "根據療效反思，建議以下後續修正：
+>
+> 1. [action 1]
+> 2. [action 2]
+> …
+>
+> 確認後我將把這份回診記錄寫入原始病歷。是否同意？"
+
+Wait for user confirmation. Do not write to the spec file until confirmed. If the user declines, offer to revise the proposals and repeat this step.
+
+### Step 6 — 更新病歷（Spec file update）
+
+After the user confirms the Phase 10 proposals, update the original spec file:
+
+- Locate the three placeholder sections: `## 真正結果`, `## 療效反思`, `## 後續修正`
+- Replace the `> _待填_` line (and its reminder comment) in each section with the actual content gathered in Steps 3–5
+- Do **not** modify any content above the `---` separator (i.e., Phase 1–7 content remains unchanged)
+
+After writing, confirm to the user:
+
+> "病歷已更新。診療循環完整閉合。"
