@@ -2,52 +2,70 @@
 
 A Claude Code skill that structures spec-writing using Traditional Chinese Medicine (TCM) consultation as its framework.
 
-## What it does
+一個以中醫問診為框架的 Claude Code 技能，將軟體規格撰寫轉化為十個診療階段，幫助你在動手實作之前，徹底釐清問題本質。
+
+---
+
+## What it does / 這個技能做什麼
 
 Invoke `/tcm-spec` and Claude acts as a TCM physician — conducting a ten-phase diagnostic consultation on your software problem or requirement, then producing a structured spec document (the prescription / 藥方).
 
+輸入 `/tcm-spec`，Claude 會化身中醫師，針對你的軟體問題或需求進行十個階段的問診，最後產出一份結構化的規格文件（藥方）。
+
 The skill forces thorough problem understanding before any solution is written. You cannot jump straight to implementation — just as a physician must diagnose before prescribing.
 
-**Ten phases:**
+這個技能強迫你在寫任何解法之前，先完整理解問題。就像醫師必須先診斷，才能開藥。
 
-| Phase | Chinese | What happens |
-|-------|---------|-------------|
-| 1 | 望（望診） | Claude silently reads codebase context, logs, and artifacts |
-| 2 | 聞（聆聽） | You describe the problem freely — Claude only listens |
-| 3 | 問（問診） | Claude asks clarifying questions one at a time (scope, constraints, context) |
-| 4 | 切（切診） | Claude probes the technical substrate — dependencies, architecture, integration points |
-| 5 | 病因病機 | Root cause analysis using TCM organ/pathology metaphors mapped to software patterns; **user confirms diagnosis before proceeding** |
-| 6 | 治療設計 | Concrete treatment plan: which files/modules/interfaces change; **user confirms plan before proceeding** |
-| 7 | 預期結果 | Verifiable, measurable success criteria |
-| 8 | 真正結果 | *(filled in after implementation)* |
-| 9 | 療效反思 | *(filled in after implementation)* — gap analysis |
-| 10 | 後續修正 | *(filled in after implementation)* — next iteration |
+**Ten phases / 十個階段：**
 
-**Works for:**
+| Phase | 階段 | What happens / 說明 |
+|-------|------|---------------------|
+| 1 | 望（望診） | Claude silently reads codebase context, logs, and artifacts / Claude 靜默閱讀程式碼、日誌與現有文件 |
+| 2 | 聞（聆聽） | You describe the problem freely — Claude only listens / 你自由描述問題，Claude 只聆聽不打斷 |
+| 3 | 問（問診） | Claude asks clarifying questions one at a time (scope, constraints, context) / Claude 逐一提問，釐清範圍、限制與使用情境 |
+| 4 | 切（切診） | Claude probes the technical substrate — dependencies, architecture, integration points / Claude 深入探查技術底層：依賴、架構決策、整合點 |
+| 5 | 病因病機 | Root cause analysis using TCM organ/pathology metaphors mapped to software patterns; **user confirms diagnosis before proceeding** / 以中醫臟腑與病理模型進行根因分析；**使用者確認診斷後才繼續** |
+| 6 | 治療設計 | Concrete treatment plan: which files/modules/interfaces change; **user confirms plan before proceeding** / 具體治療方案：哪些檔案、模組、介面需要變動；**使用者確認後才繼續** |
+| 7 | 預期結果 | Verifiable, measurable success criteria / 可量測、可驗證的成功標準 |
+| 8 | 真正結果 | *(filled in after implementation / 實作完成後填入)* |
+| 9 | 療效反思 | *(filled in after implementation / 實作完成後填入)* — gap analysis / 預期與實際的落差分析 |
+| 10 | 後續修正 | *(filled in after implementation / 實作完成後填入)* — next iteration / 下一輪改善行動 |
 
-- New feature design
-- Technical architecture decisions
-- Bug root cause investigation
+**Works for / 適用場景：**
 
-## Output
+- New feature design / 新功能設計
+- Technical architecture decisions / 技術架構決策
+- Bug root cause investigation / Bug 根因調查
+
+---
+
+## Output / 輸出
 
 A spec document saved to `docs/specs/YYYY-MM-DD-<主訴>.md`, structured according to all ten phases.  
 Phases 8–10 are scaffolded as placeholders and filled in after implementation.
 
-## Installation
+規格文件儲存於 `docs/specs/YYYY-MM-DD-<主訴>.md`，依十個階段結構化呈現。  
+第 8–10 階段會預留為空白，實作完成後再行填入。
+
+---
+
+## Installation / 安裝
 
 ```bash
 mkdir -p ~/.claude/skills/tcm-spec
 cp skills/tcm-spec/SKILL.md ~/.claude/skills/tcm-spec/SKILL.md
 ```
 
-Then in any Claude Code session, invoke with:
+Then in any Claude Code session, invoke with:  
+安裝完成後，在任意 Claude Code session 中輸入：
 
 ```
 /tcm-spec
 ```
 
-## Usage
+---
+
+## Usage / 使用方式
 
 ```
 /tcm-spec
@@ -56,15 +74,22 @@ Then in any Claude Code session, invoke with:
 Claude will open the consultation. You describe your problem when prompted.  
 You do **not** need to know the phase names — Claude tracks them internally.
 
-## Repo structure
+Claude 會開啟問診。當 Claude 提示時，描述你的問題即可。  
+你**不需要**知道各階段的名稱，Claude 會在內部追蹤進度。
+
+---
+
+## Repo structure / 專案結構
 
 ```
-skills/tcm-spec/SKILL.md   ← the skill (install this)
-docs/specs/                ← example spec produced by the skill
-docs/plans/                ← implementation plan for the skill itself
+skills/tcm-spec/SKILL.md   ← the skill (install this) / 技能本體（安裝這個）
+docs/specs/                ← example spec produced by the skill / 技能產出的範例規格書
+docs/plans/                ← implementation plan for the skill itself / 技能本身的實作計畫
 ```
 
-## License
+---
+
+## License / 授權
 
 MIT License
 
